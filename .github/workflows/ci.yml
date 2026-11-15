@@ -12,3 +12,24 @@ jobs:
   lint:
     # Convenção da org: o lint mora no repositório .github.
     uses: open-eda-labs/.github/.github/workflows/lint.yml@main
+
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      # Pendência: pinar por SHA de commit (D-40).
+      - uses: actions/checkout@v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6.3.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - run: mvn -B -ntp verify
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: sbom
+          path: target/bom.json
