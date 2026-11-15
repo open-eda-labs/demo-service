@@ -23,10 +23,12 @@ final class Metrics {
     private final OkHttpClient http = new OkHttpClient.Builder().callTimeout(Duration.ofSeconds(2)).build();
     private final Map<String, LongAdder> counts = new ConcurrentHashMap<>();
     private final String influxUrl;
+    private final String influxToken;
 
-    /** influxUrl nulo: só conta, não envia. */
-    Metrics(String influxUrl) {
+    /** influxUrl nulo: só conta, não envia. influxToken nulo: envia sem autenticação. */
+    Metrics(String influxUrl, String influxToken) {
         this.influxUrl = influxUrl;
+        this.influxToken = influxToken;
     }
 
     void record(String route, int status, long millis) {
@@ -35,7 +37,11 @@ final class Metrics {
             return;
         }
         String line = "demo_requests,route=" + route.replace(" ", "\\ ") + " status=" + status + "i,duration_ms=" + millis + "i";
-        Request request = new Request.Builder().url(influxUrl).post(RequestBody.create(line, TEXT)).build();
+        Request.Builder builder = new Request.Builder().url(influxUrl).post(RequestBody.create(line, TEXT));
+        if (influxToken != null) {
+            builder.header("Authorization", "Token " + influxToken); // InfluxDB 2.x exige token na escrita
+        }
+        Request request = builder.build();
         try (Response response = http.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 LOG.warn("InfluxDB respondeu {}", response.code());

@@ -12,11 +12,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 final class StubServer implements AutoCloseable {
 
     final BlockingQueue<String> received = new LinkedBlockingQueue<>();
+    volatile String authorization;
     private final HttpServer server;
 
     StubServer(String path, String body) throws IOException {
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext(path, exchange -> {
+            authorization = exchange.getRequestHeaders().getFirst("Authorization");
             received.add(new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8));
             byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
             exchange.sendResponseHeaders(200, bytes.length);

@@ -39,6 +39,7 @@ O CI roda `mvn -B -ntp verify` e publica o SBOM. Não há scan OSV no CI: o re-s
 | `CHAOS_JWT_SECRET` | (nenhum) | segredo HS256 de `/chaos/*`, 32+ caracteres; sem ele `/chaos/*` responde 503 |
 | `CHAOS_SEED` | `42` | seed do jitter de latência |
 | `INFLUX_URL` | (nenhum) | URL de escrita do InfluxDB (line protocol); sem ela não envia métricas |
+| `INFLUX_TOKEN` | (nenhum) | token do InfluxDB 2.x, enviado como `Authorization: Token`; sem ele envia sem autenticação |
 | `CHAOS_JWT`, `URL` | (gerado), `http://127.0.0.1:$PORT` | só para `chaos/run-scenarios.sh` |
 
 | Endpoint | O que faz |

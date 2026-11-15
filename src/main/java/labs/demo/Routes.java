@@ -42,7 +42,7 @@ final class Routes extends HttpServlet {
         this.bind = bind;
         this.jwtSecret = env.get("CHAOS_JWT_SECRET");
         this.chaos = new Chaos(scenarios, new History(), Long.parseLong(env.getOrDefault("CHAOS_SEED", "42")));
-        this.metrics = new Metrics(env.get("INFLUX_URL"));
+        this.metrics = new Metrics(env.get("INFLUX_URL"), env.get("INFLUX_TOKEN"));
     }
 
     @Override
