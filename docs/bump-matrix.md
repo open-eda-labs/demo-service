@@ -1,5 +1,7 @@
 # Matriz de bumps medida
 
+> Matriz histórica: foi medida antes da divisão em `demo-parent` e `demo-lib` (2026-11-15) e com a menor versão corrigida.
+
 **Data:** 2026-11-15. Cada linha é uma cópia do commit base com só o bump daquela linha para a versão "Corrige o principal" da [proposta](dependency-proposal.md), seguida de `mvn -B -ntp -q verify` (JDK 21, Maven 3.9.11).
 
 Como cada bump foi aplicado: versão direta trocada no `pom.xml`; #1 pela property `log4j2.version` (log4j-api e log4j-core juntos); #10 pela property `jackson.version` do `jackson-bom` (2.13.4.20221013 é o BOM que traz jackson-databind 2.13.4.2 e jackson-core 2.13.4); #7 dentro do profile `chaos`; #11 e #12 por `dependencyManagement`; #19 só `jetty-server` (não existe `jetty-servlet` 12; a troca para `jetty-ee10-servlet` faz parte da migração N2).

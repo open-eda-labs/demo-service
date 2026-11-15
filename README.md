@@ -22,15 +22,17 @@ Contenção: o servidor escuta só em `127.0.0.1` por padrão; `/chaos/*` exige 
 
 ## Construir e rodar
 
-JDK 21 e Maven 3.9:
+JDK 21 e Maven 3.9. O serviço herda o `demo-parent` e consome a `demo-lib` (ADR-0005: nenhuma versão de terceiro mora aqui). Para construir localmente, instale o parent e a lib antes (ou deixe o Maven baixá-los do GitHub Packages, com credencial `github` no `~/.m2/settings.xml`):
 
 ```sh
+(cd ../demo-parent && mvn -B -ntp install)
+(cd ../demo-lib && mvn -B -ntp install)
 mvn -B -ntp verify                     # testes, jar, target/lib e SBOM em target/bom.json
 java -jar target/demo-service.jar      # a partir do checkout (app.properties aponta para banner.txt do repo)
 CHAOS_JWT_SECRET=<32+ caracteres> ./chaos/run-scenarios.sh
 ```
 
-O CI roda `mvn -B -ntp verify` e publica o SBOM. Não há scan OSV no CI: o re-scan é do fluxo do vuln fixer.
+O CI roda `mvn -B -ntp verify` e publica o SBOM; lê o `demo-parent` e a `demo-lib` do GitHub Packages com o `GITHUB_TOKEN` (`setup-java` com `server-id: github`), então só passa depois de os dois 1.0.0 estarem publicados e com leitura liberada. Não há scan OSV no CI: o re-scan é do fluxo do vuln fixer.
 
 | Variável | Padrão | Uso |
 |---|---|---|
@@ -56,25 +58,25 @@ Cenários (latência, erro, OOM simulado com teto de 16 MB) ficam em `src/main/r
 
 ## Dependências, uso e testes
 
-| # | Dependência | Classe que usa | Teste que cobre | Classe esperada |
-|---|---|---|---|---|
-| 1 | log4j-core 2.14.1 (+ log4j-api) | `Routes` | `Log4jCoreTest` | simples |
-| 2 | commons-text 1.9 | `chaos.Chaos` | `chaos.CommonsTextTest` | simples |
-| 3 | guava 31.1-jre | `chaos.Scenarios` | `chaos.GuavaTest` | simples |
-| 4 | commons-io 2.6 | `chaos.Scenarios` | `chaos.CommonsIoTest` | simples |
-| 5 | httpclient 4.5.12 | `Downstream` | `HttpClientTest` | simples |
-| 6 | nimbus-jose-jwt 9.31 | `Jwt` | `NimbusJoseJwtTest` | simples |
-| 7 | org.json 20220320 (profile `chaos`) | `Routes` | `OrgJsonTest` | simples |
-| 8 | protobuf-java 3.21.6 | `Metrics` | `ProtobufJavaTest` | simples |
-| 9 | commons-lang3 3.17.0 | `chaos.Chaos` | `chaos.CommonsLang3Test` | simples |
-| 10 | jackson-databind 2.13.2 (BOM) | `Routes`, `chaos.Scenarios` | `JacksonDatabindTest` | simples |
-| 11 | json-smart 2.5.0 (via json-path) | `chaos.Scenarios` | `chaos.JsonSmartTest` | simples |
-| 12 | okio 2.8.0 (via okhttp) | `Metrics` | `OkioTest` | simples |
-| 13 | snakeyaml 1.33 | `chaos.Scenarios` | `chaos.SnakeYamlTest` | quebra |
-| 14 | h2 1.4.200 | `chaos.History` | `chaos.H2Test` | quebra |
-| 15 | xstream 1.4.17 | `chaos.Chaos` | `chaos.XStreamTest` | quebra |
-| 16 | commons-beanutils 1.9.3 | `chaos.Scenario` | `chaos.CommonsBeanutilsTest` | quebra |
-| 17 | spring-web 5.3.39 | `Downstream` | `SpringWebTest` | quebra |
-| 18 | commons-configuration2 2.7 | `Config` | `CommonsConfiguration2Test` | quebra |
-| 19 | jetty-server 9.4.40 (+ jetty-servlet) | `App`, `Routes` | `AppIntegrationTest` | quebra |
-| 20 | commons-compress 1.21 | `chaos.OomFault` | `chaos.CommonsCompressTest` | quebra |
+| # | Dependência | Artefato onde é usada | Classe que usa | Teste que cobre | Classe esperada |
+|---|---|---|---|---|---|
+| 1 | log4j-core 2.14.1 (+ log4j-api) | demo-service (log4j-core) e demo-lib (log4j-api) | `Routes` | `Log4jCoreTest` | simples |
+| 2 | commons-text 1.9 | demo-lib | `chaos.Chaos` | `chaos.CommonsTextTest` | simples |
+| 3 | guava 31.1-jre | demo-lib | `chaos.Scenarios` | `chaos.GuavaTest` | simples |
+| 4 | commons-io 2.6 | demo-lib | `chaos.Scenarios` | `chaos.CommonsIoTest` | simples |
+| 5 | httpclient 4.5.12 | demo-lib | `Downstream` | `HttpClientTest` | simples |
+| 6 | nimbus-jose-jwt 9.31 | demo-lib | `Jwt` | `NimbusJoseJwtTest` | simples |
+| 7 | org.json 20220320 (profile `chaos`) | demo-service | `Routes` | `OrgJsonTest` | simples |
+| 8 | protobuf-java 3.21.6 | demo-lib | `Metrics` | `ProtobufJavaTest` | simples |
+| 9 | commons-lang3 3.17.0 | demo-lib | `chaos.Chaos` | `chaos.CommonsLang3Test` | simples |
+| 10 | jackson-databind 2.13.2 (BOM) | demo-service e demo-lib | `Routes`, `chaos.Scenarios` | `JacksonDatabindTest` | simples |
+| 11 | json-smart 2.5.0 (via json-path) | demo-lib | `chaos.Scenarios` | `chaos.JsonSmartTest` | simples |
+| 12 | okio 2.8.0 (via okhttp) | demo-lib | `Metrics` | `OkioTest` | simples |
+| 13 | snakeyaml 1.33 | demo-lib | `chaos.Scenarios` | `chaos.SnakeYamlTest` | quebra |
+| 14 | h2 1.4.200 | demo-lib | `chaos.History` | `chaos.H2Test` | quebra |
+| 15 | xstream 1.4.17 | demo-lib | `chaos.Chaos` | `chaos.XStreamTest` | quebra |
+| 16 | commons-beanutils 1.9.3 | demo-lib | `chaos.Scenario` | `chaos.CommonsBeanutilsTest` | quebra |
+| 17 | spring-web 5.3.39 | demo-lib | `Downstream` | `SpringWebTest` | quebra |
+| 18 | commons-configuration2 2.7 | demo-lib (`Config`); teste e `app.properties` no serviço | `Config` | `CommonsConfiguration2Test` | quebra |
+| 19 | jetty-server 9.4.40 (+ jetty-servlet) | demo-service | `App`, `Routes` | `AppIntegrationTest` | quebra |
+| 20 | commons-compress 1.21 | demo-lib | `chaos.OomFault` | `chaos.CommonsCompressTest` | quebra |
