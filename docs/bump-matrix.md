@@ -24,7 +24,7 @@ Resultado: 20 de 20 batem com a proposta (12 verdes, 8 falhas).
 | 12 | okio (T via okhttp 4.9.3) | 2.8.0 | 3.4.0 | verde | okio-jvm 3.4.0 entra; kotlin-stdlib 1.4.10 continua vencendo a mediação e nada quebra | sim |
 | 13 | snakeyaml | 1.33 | 2.0 | falha (compilação) | `Scenarios.java`: `Class<Scenario> cannot be converted to LoaderOptions` | sim |
 | 14 | h2 | 1.4.200 | 2.0.206 | falha (teste) | `H2Test`: `Syntax error in SQL statement "CREATE TABLE FAULT_LOG (KEY[*] ...` (`key` reservada) | sim |
-| 15 | xstream | 1.4.17 | 1.4.18 | falha (teste) | `XStreamTest` e `AppIntegrationTest`: `ForbiddenClassException: labs.demo.chaos.Scenario` | sim |
+| 15 | xstream | 1.4.17 | 1.4.18 | falha (teste) | `XStreamTest` e `AppIntegrationTest`: `ForbiddenClassException: labs.demo.lib.chaos.Scenario` | sim |
 | 16 | commons-beanutils | 1.9.3 | 1.9.4 | falha (teste) | `CommonsBeanutilsTest`: chave `class` some do `describe` | sim |
 | 17 | spring-web | 5.3.39 | 6.0.0 | falha (compilação) | `Downstream.java`: `cannot access org.apache.hc.client5.http.classic.HttpClient` | sim |
 | 18 | commons-configuration2 | 2.7 | 2.8.0 | falha (teste) | `CommonsConfiguration2Test` e `AppIntegrationTest`: `${url:UTF-8:file:...}` volta sem resolver | sim |

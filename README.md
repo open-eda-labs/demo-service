@@ -22,7 +22,7 @@ Contenção: o servidor escuta só em `127.0.0.1` por padrão; `/chaos/*` exige 
 
 ## Construir e rodar
 
-JDK 21 e Maven 3.9. O serviço herda o `demo-parent` e consome a `demo-lib` (ADR-0005: nenhuma versão de terceiro mora aqui). Para construir localmente, instale o parent e a lib antes (ou deixe o Maven baixá-los do GitHub Packages, com credencial `github` no `~/.m2/settings.xml`):
+JDK 21 e Maven 3.9. O serviço herda o `demo-parent` e consome a `demo-lib` (ADR-0005: nenhuma versão de terceiro mora aqui). Para construir localmente, instale o parent e a lib antes (ou deixe o Maven baixá-los do GitHub Packages, com credenciais `github` e `github-demo-lib` no `~/.m2/settings.xml`):
 
 ```sh
 (cd ../demo-parent && mvn -B -ntp install)
@@ -32,7 +32,7 @@ java -jar target/demo-service.jar      # a partir do checkout (app.properties ap
 CHAOS_JWT_SECRET=<32+ caracteres> ./chaos/run-scenarios.sh
 ```
 
-O CI roda `mvn -B -ntp verify` e publica o SBOM; lê o `demo-parent` e a `demo-lib` do GitHub Packages com o `GITHUB_TOKEN` (`setup-java` com `server-id: github`), então só passa depois de os dois 1.0.0 estarem publicados e com leitura liberada. Não há scan OSV no CI: o re-scan é do fluxo do vuln fixer.
+O CI instala o `demo-parent` e a `demo-lib` da `main` (checkout dos repositórios públicos) no `~/.m2` do runner, gera um `settings.xml` com os servidores `github` (demo-parent) e `github-demo-lib` (demo-lib), ambos com o `GITHUB_TOKEN`, roda `mvn -B -ntp verify` e publica o SBOM. Só fica verde depois de os PRs do parent e da lib estarem na `main`. Não há scan OSV no CI: o re-scan é do fluxo do vuln fixer.
 
 | Variável | Padrão | Uso |
 |---|---|---|

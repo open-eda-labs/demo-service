@@ -19,14 +19,17 @@
     <demo-lib.version>1.0.0</demo-lib.version>
   </properties>
 
-  <!-- Curinga da org: o Maven precisa achar o demo-parent e a demo-lib (outros repositórios) no GitHub Packages. -->
+  <!-- O Maven precisa achar o demo-parent e a demo-lib (outros repositórios) no GitHub Packages; um id por URL. -->
   <repositories>
     <repository>
       <id>github</id>
-      <url>https://maven.pkg.github.com/open-eda-labs/*</url>
+      <url>https://maven.pkg.github.com/open-eda-labs/demo-parent</url>
+    </repository>
+    <repository>
+      <id>github-demo-lib</id>
+      <url>https://maven.pkg.github.com/open-eda-labs/demo-lib</url>
     </repository>
   </repositories>
-
   <dependencies>
     <dependency>
       <groupId>labs.demo</groupId>

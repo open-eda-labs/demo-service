@@ -1,5 +1,6 @@
 package labs.demo;
 
+import labs.demo.lib.Jwt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
