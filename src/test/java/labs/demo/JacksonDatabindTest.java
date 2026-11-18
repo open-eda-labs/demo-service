@@ -2,7 +2,7 @@ package labs.demo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import labs.demo.chaos.Chaos;
+import labs.demo.lib.chaos.Chaos;
 import org.junit.jupiter.api.Test;
 
 /** #10 jackson-databind (via jackson-bom): contrato do corpo JSON das respostas. */

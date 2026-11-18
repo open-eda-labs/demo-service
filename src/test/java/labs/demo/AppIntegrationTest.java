@@ -1,5 +1,6 @@
 package labs.demo;
 
+import labs.demo.lib.Jwt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -7,6 +8,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Map;
 import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.AfterAll;
@@ -16,7 +19,14 @@ import org.junit.jupiter.api.Test;
 /** #19 jetty-server/jetty-servlet: integração com o servidor numa porta livre. */
 class AppIntegrationTest {
 
-    static final String SECRET = NimbusJoseJwtTest.secret();
+    static final String SECRET = secret();
+
+    static String secret() {
+        byte[] bytes = new byte[32];
+        new SecureRandom().nextBytes(bytes);
+        return Base64.getEncoder().encodeToString(bytes);
+    }
+
     static final HttpClient HTTP = HttpClient.newHttpClient();
     static Server server;
     static String base;
