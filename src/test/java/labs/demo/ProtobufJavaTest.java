@@ -10,7 +10,7 @@ class ProtobufJavaTest {
 
     @Test
     void snapshotVaiEVoltaEmBytes() throws Exception {
-        Metrics metrics = new Metrics(null);
+        Metrics metrics = new Metrics(null, null);
         metrics.record("GET /work", 200, 3);
         metrics.record("GET /work", 500, 4);
         Struct back = Struct.parseFrom(metrics.snapshot().toByteArray());
